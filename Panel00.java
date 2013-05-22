@@ -169,6 +169,7 @@ public class Panel00 extends JPanel
       {
           public void actionPerformed(ActionEvent e)
          {
+				allow = false;
 				if(isPaused)
 				{
 					button.setEnabled(false);
@@ -185,7 +186,8 @@ public class Panel00 extends JPanel
 	private class Listener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
-		{
+		{	
+		
 			react();
 			allow = false;
 			random.setText("New Game");
