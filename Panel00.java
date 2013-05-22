@@ -1,26 +1,43 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.Line;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
+import java.io.*;
+import java.applet.Applet;
+import java.net.URL;
+
+import javax.sound.sampled.*;
+
 
 
 public class Panel00 extends JPanel
 {
 	private JLabel label,pop,gen;
+	private static Applet music;
 	private final JLabel[][] life;
 	private final JLabel[][] temp;
    private Timer timer;  
+	private Clip clip;
 	private int count;
-	private boolean allow,isPaused,hasBorder;
+	private boolean allow,isPaused,hasBorder,musicPlaying;
 	private final int r,c;
-	private JButton random,button,clear,bord;
-	public Panel00()
+	private JButton random,button,clear,bord,sound;
+	public Panel00() throws Exception
 	{
+		URL mediaURL = this.getClass().getResource("background.wav");
+
+		musicPlaying = true;
 		r = 50;
 		c = 50;
 		isPaused = true;
 		life = new JLabel[r][c];
 		temp = new JLabel[r][c];
-      timer = new Timer(50, new TListener());
+      timer = new Timer(75, new TListener());
 		setLayout(new BorderLayout());
 		pop = new JLabel("");
 		pop.setFont(new Font("Serif",Font.BOLD,20));
@@ -53,7 +70,10 @@ public class Panel00 extends JPanel
 		buttonz.add(clear);	
 		bord = new JButton("Border Toggle");
 		bord.addActionListener(new BListener());
-		buttonz.add(bord);			
+		buttonz.add(bord);	
+		sound = new JButton("Toggle Sound");
+		sound.addActionListener(new SListener());
+		buttonz.add(sound);					
 		add(buttonz,BorderLayout.SOUTH);
 		
 					
@@ -95,13 +115,18 @@ public class Panel00 extends JPanel
             public void mousePressed(MouseEvent me){ 
 					if(allow && cell.getBackground() == Color.white) 
 					cell.setBackground(Color.black);
-					else if(allow && cell.getBackground() == Color.black)
+					else if(allow && cell.getBackground() != Color.white)
 					cell.setBackground(Color.white);
 					updateTotals();
              } 
 	        });  
 			}
-			
+// 			music = new Applet();
+// 			music.newAudioClip(this.getClass().getResource("background.wav")).play();
+        clip = AudioSystem.getClip();
+			AudioInputStream ais = AudioSystem.getAudioInputStream(mediaURL);
+			clip.open(ais);
+        clip.loop(Clip.LOOP_CONTINUOUSLY);			
 			life[2][1].setBackground(Color.black);
 			life[2][4].setBackground(Color.black);
 			
@@ -137,7 +162,7 @@ public class Panel00 extends JPanel
 			updateTotals();
 			
 	}
-	
+		
        private class TListener implements ActionListener
       {
           public void actionPerformed(ActionEvent e)
@@ -145,6 +170,20 @@ public class Panel00 extends JPanel
 				react();
 			}
 		}	
+		
+       private class SListener implements ActionListener
+      {
+          public void actionPerformed(ActionEvent e)
+         {
+ 				if(musicPlaying)
+ 				clip.stop();
+ 				else{
+				clip.loop(-1);
+				clip.start();
+				}
+				musicPlaying = !musicPlaying;
+			}
+		}			
 		
        private class BListener implements ActionListener
       {
@@ -289,7 +328,7 @@ public class Panel00 extends JPanel
 	
 	public boolean hasLife(int row,int col)
 	{
-		if(life[row][col].getBackground() == Color.black)
+		if(life[row][col].getBackground() != Color.white)
 		return true;
 		return false;
 	}
@@ -382,8 +421,11 @@ public class Panel00 extends JPanel
 		}
 		
 		for(int x = 0; x<life.length;x++)
-		for(int y = 0; y<life[0].length;y++)		
+		for(int y = 0; y<life[0].length;y++)
+		if(temp[x][y].getBackground() != Color.white)		
 		life[x][y].setBackground(temp[x][y].getBackground());
+		else
+		life[x][y].setBackground(Color.white);		
 		updateTotals();
 		
 	}
@@ -391,7 +433,7 @@ public class Panel00 extends JPanel
 		int popu = 0;		
 		for(int x = 0; x<life.length;x++)
 		for(int y = 0; y<life[0].length;y++){
-			if(life[x][y].getBackground() == Color.black)
+			if(life[x][y].getBackground() != Color.white)
 			popu++; 	
 		}
 		pop.setText("Population: " + popu);
