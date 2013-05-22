@@ -24,15 +24,14 @@ public class Panel00 extends JPanel
    private Timer timer;  
 	private Clip clip;
 	private int count;
-	private boolean allow,isPaused,hasBorder,musicPlaying,disco;
+	private boolean allow,isPaused,hasBorder,musicPlaying;
 	private final int r,c;
-	private JButton random,button,clear,bord,sound,disc;
+	private JButton random,button,clear,bord,sound;
 	public Panel00() throws Exception
 	{
 		URL mediaURL = this.getClass().getResource("background.wav");
 
 		musicPlaying = true;
-		disco = false;
 		r = 50;
 		c = 50;
 		isPaused = true;
@@ -47,6 +46,11 @@ public class Panel00 extends JPanel
 		gen.setFont(new Font("Serif",Font.BOLD,20));
 		gen.setForeground(Color.red);
 
+						
+// 		label = new JLabel("123");
+// 		label.setFont(new Font("Serif",Font.BOLD,20));
+// 		label.setForeground(Color.blue);
+// 		add(label, BorderLayout.SOUTH);
 		hasBorder = false;
 		button = new JButton("Next Frame");
 		button.addActionListener(new Listener());
@@ -71,10 +75,6 @@ public class Panel00 extends JPanel
 		sound.addActionListener(new SListener());
 		buttonz.add(sound);					
 		add(buttonz,BorderLayout.SOUTH);
-		disc = new JButton("Toggle Disco!");
-		disc.addActionListener(new DListener());
-		buttonz.add(disc);					
-		add(buttonz,BorderLayout.SOUTH);		
 		
 					
 		allow = true;
@@ -169,26 +169,7 @@ public class Panel00 extends JPanel
          {
 				react();
 			}
-		}
-		
-       private class DListener implements ActionListener
-      {
-          public void actionPerformed(ActionEvent e)
-         {
-				if(!disco)
-				for(int x = 0; x<life.length;x++)
-				for(int y = 0; y<life[0].length;y++)
-				if(life[x][y].getBackground() != Color.white)
-				life[x][y].setBackground(randColor());
-				if(disco)
-				for(int x = 0; x<life.length;x++)
-				for(int y = 0; y<life[0].length;y++)
-				if(life[x][y].getBackground() != Color.white)				
-				life[x][y].setBackground(Color.black);				
-				disco = !disco;
-				
-			}
-		}			
+		}	
 		
        private class SListener implements ActionListener
       {
@@ -302,41 +283,41 @@ public class Panel00 extends JPanel
 			{
 				int x = (int)(Math.random() * r);
 				int y = (int)(Math.random() * c);
-				discoChange(x,y);
+				life[x][y].setBackground(Color.black);
 				
 				if(x > 0 && x < r - 1 && y > 0 && y < c - 1)
 				{
 					int ne = (int)(Math.random() + 0.5);
 					if(ne == 1)
-					 discoChange(x,y+1);
+					life[x][y+1].setBackground(Color.black);
 					
 					ne = (int)(Math.random() + 0.5);
 					if(ne == 1)
-					 discoChange(x,y-1);
+					life[x][y-1].setBackground(Color.black);
 					
 					ne = (int)(Math.random() + 0.5);
 					if(ne == 1)
-					 discoChange(x+1,y+1);
+					life[x+1][y+1].setBackground(Color.black);
 					
 					ne = (int)(Math.random() + 0.5);
 					if(ne == 1)
-					 discoChange(x-1,y+1);
+					life[x-1][y+1].setBackground(Color.black);
 					
 					ne = (int)(Math.random() + 0.5);
 					if(ne == 1)
-					 discoChange(x+1,y-1);
+					life[x+1][y-1].setBackground(Color.black);
 					
 					ne = (int)(Math.random() + 0.5);
 					if(ne == 1)
-					 discoChange(x-1,y-1);	
+					life[x-1][y-1].setBackground(Color.black);	
 					
 					ne = (int)(Math.random() + 0.5);
 					if(ne == 1)
-					 discoChange(x+1,y);
+					life[x+1][y].setBackground(Color.black);
 					
 					ne = (int)(Math.random() + 0.5);
 					if(ne == 1)
-					 discoChange(x-1,y);										
+					life[x-1][y].setBackground(Color.black);										
 					}
 				}
 			
@@ -441,40 +422,12 @@ public class Panel00 extends JPanel
 		
 		for(int x = 0; x<life.length;x++)
 		for(int y = 0; y<life[0].length;y++)
-		if(temp[x][y].getBackground() != Color.white)	
-		{
-		if(disco)
-		life[x][y].setBackground(randColor());
-		else
-		life[x][y].setBackground(Color.black);
-		}
+		if(temp[x][y].getBackground() != Color.white)		
+		life[x][y].setBackground(temp[x][y].getBackground());
 		else
 		life[x][y].setBackground(Color.white);		
 		updateTotals();
 		
-	}
-	
-	public Color randColor(){
-	int q = (int)(Math.random() * 8);
-	switch(q){
-	case 1:return Color.red;
-	 
-	case 2:return Color.blue;
-	 
-	case 3:return Color.green;
-	 
-	case 4:return Color.magenta;
-	 
-	case 5:return Color.yellow;
-	 
-	case 6:return Color.orange;
-	 
-	case 7:return Color.cyan;
-	 
-						
-	}
-	return Color.black;
-	
 	}
 	public void updateTotals(){
 		int popu = 0;		
@@ -487,12 +440,6 @@ public class Panel00 extends JPanel
 		gen.setText("Generation: " + count);	
 	}
 	
-	public void discoChange(int x, int y){
-	if(disco)
-	life[x][y].setBackground(randColor());
-	else
-	life[x][y].setBackground(Color.black);
-	}
 
 
 }
