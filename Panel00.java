@@ -27,8 +27,8 @@ public class Panel00 extends JPanel
 	private boolean allow,isPaused,hasBorder,musicPlaying,disco;
 	private final int r,c;
 	private JButton random,button,clear,bord,sound,disc;
-	public Panel00() throws Exception
-	{
+	public Panel00(){
+
 		URL mediaURL = this.getClass().getResource("background.wav");
 
 		musicPlaying = true;
@@ -114,19 +114,20 @@ public class Panel00 extends JPanel
 				cell.addMouseListener(new MouseAdapter() {  //no error
             public void mousePressed(MouseEvent me){ 
 					if(allow && cell.getBackground() == Color.white) 
-					cell.setBackground(Color.black);
+					indChange(cell);
 					else if(allow && cell.getBackground() != Color.white)
 					cell.setBackground(Color.white);
 					updateTotals();
              } 
 	        });  
 			}
-// 			music = new Applet();
-// 			music.newAudioClip(this.getClass().getResource("background.wav")).play();
+			try{
         clip = AudioSystem.getClip();
 			AudioInputStream ais = AudioSystem.getAudioInputStream(mediaURL);
 			clip.open(ais);
         clip.loop(Clip.LOOP_CONTINUOUSLY);			
+		  }
+		  catch(Exception e){}
 			life[2][1].setBackground(Color.black);
 			life[2][4].setBackground(Color.black);
 			
@@ -161,7 +162,8 @@ public class Panel00 extends JPanel
 			add(lifecont, BorderLayout.CENTER);
 			updateTotals();
 			
-	}
+		}
+
 		
        private class TListener implements ActionListener
       {
@@ -493,6 +495,13 @@ public class Panel00 extends JPanel
 	else
 	life[x][y].setBackground(Color.black);
 	}
+	
+	public void indChange(JLabel a){
+	if(disco)
+	a.setBackground(randColor());
+	else
+	a.setBackground(Color.black);
+	}	
 
 
 }
